@@ -1,0 +1,86 @@
+# liboath.map - linker version script for liboath
+# Copyright (C) 2009-2024 Simon Josefsson
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public License
+# as published by the Free Software Foundation; either version 2.1 of
+# the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301 USA
+
+LIBOATH_1.2.0 {
+  global:
+    oath_init;
+    oath_done;
+
+    oath_check_version;
+
+    oath_hex2bin;
+
+    oath_hotp_generate;
+    oath_hotp_validate;
+
+    oath_authenticate_usersfile;
+
+  local:
+    *;
+};
+
+LIBOATH_1.4.0
+{
+  global:
+    oath_totp_generate;
+    oath_hotp_validate_callback;
+} LIBOATH_1.2.0;
+
+LIBOATH_1.6.0
+{
+  global:
+    oath_totp_validate;
+    oath_totp_validate_callback;
+} LIBOATH_1.4.0;
+
+LIBOATH_1.8.0
+{
+  global:
+    oath_strerror;
+    oath_strerror_name;
+} LIBOATH_1.6.0;
+
+LIBOATH_1.10.0
+{
+  global:
+    oath_totp_validate2;
+    oath_totp_validate2_callback;
+} LIBOATH_1.8.0;
+
+LIBOATH_1.12.0
+{
+  global:
+    oath_bin2hex;
+    oath_base32_decode;
+    oath_base32_encode;
+} LIBOATH_1.10.0;
+
+LIBOATH_2.2.0
+{
+  global:
+    oath_totp_validate3;
+    oath_totp_validate3_callback;
+} LIBOATH_1.12.0;
+
+LIBOATH_2.6.0
+{
+  global:
+    oath_totp_generate2;
+    oath_totp_validate4;
+    oath_totp_validate4_callback;
+} LIBOATH_2.2.0;

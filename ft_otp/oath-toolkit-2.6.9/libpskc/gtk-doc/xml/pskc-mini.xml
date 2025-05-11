@@ -1,0 +1,6 @@
+<para><informalexample><programlisting>
+&lt;?xml version="1.0"?&gt;
+&lt;KeyContainer xmlns="urn:ietf:params:xml:ns:keyprov:pskc" Version="1.0"&gt;
+  &lt;KeyPackage/&gt;
+&lt;/KeyContainer&gt;
+</programlisting></informalexample></para>

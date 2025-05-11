@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Create PSKC data: PSKC Library (libpskc) Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="PSKC Library (libpskc) Manual">
+<link rel="up" href="pskc-tutorial-library.html" title="Library libpskc">
+<link rel="prev" href="pskc-tutorial-libpskc-verify.html" title="Verify signed PSKC data">
+<link rel="next" href="pskc-tutorial-pskctool.html" title="Command line pskctool">
+<meta name="generator" content="GTK-Doc V1.33.1 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts"></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="pskc-tutorial-library.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="pskc-tutorial-libpskc-verify.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="pskc-tutorial-pskctool.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="pskc-tutorial-libpskc-create"></a>Create PSKC data</h2></div></div></div>
+<p>
+	  To create PSKC data you should first get a handle to a
+	  container using <a class="link" href="libpskc-container.html#pskc-init" title="pskc_init ()">pskc_init</a>.
+	  Add one or more keypackages to the container
+	  using <a class="link" href="libpskc-container.html#pskc-add-keypackage" title="pskc_add_keypackage ()">
+	  pskc_add_keypackage</a>.  For each keypackage, set the
+	  relevant values you want using the "pskc_set_*" functions,
+	  for example <a class="link" href="libpskc-keypackage.html#pskc-set-device-serialno" title="pskc_set_device_serialno ()">
+	  pskc_set_device_serialno</a>.
+	</p>
+<p>
+	  The XML output is created as usual
+	  with <a class="link" href="libpskc-container.html#pskc-build-xml" title="pskc_build_xml ()">pskc_build_xml</a>.
+	</p>
+<p>
+	  Here follows an example that would generate PSKC data that
+	  could be used to personalize an imaginary HOTP token.
+	</p>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;pskc/pskc.h&gt;</span><span class="cp"></span>
+
+<span class="cm">/*</span>
+<span class="cm"> * $ cc -o pskccreate pskccreate.c $(pkg-config --cflags --libs libpskc)</span>
+<span class="cm"> * $ ./pskccreate</span>
+<span class="cm"> */</span><span class="w"></span>
+
+<span class="cp">#define PSKC_CHECK_RC					   \</span>
+<span class="cp">  if (rc != PSKC_OK) {					   \</span>
+<span class="cp">    printf (&quot;%s (%d): %s\n&quot;, pskc_strerror_name (rc),	   \</span>
+<span class="cp">	    rc, pskc_strerror (rc));			   \</span>
+<span class="cp">    return 1;						   \</span>
+<span class="cp">  }</span>
+
+<span class="kt">int</span><span class="w"></span>
+<span class="nf">main</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="kt">size_t</span><span class="w"> </span><span class="n">len</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">pskc_t</span><span class="w"> </span><span class="o">*</span><span class="n">container</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">pskc_key_t</span><span class="w"> </span><span class="o">*</span><span class="n">keypackage</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">out</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pskc_global_init</span><span class="w"> </span><span class="p">();</span><span class="w"></span>
+<span class="w">  </span><span class="n">PSKC_CHECK_RC</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pskc_init</span><span class="w"> </span><span class="p">(</span><span class="o">&amp;</span><span class="n">container</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">PSKC_CHECK_RC</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pskc_add_keypackage</span><span class="w"> </span><span class="p">(</span><span class="n">container</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">keypackage</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">PSKC_CHECK_RC</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">pskc_set_device_manufacturer</span><span class="w"> </span><span class="p">(</span><span class="n">keypackage</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Acme&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">pskc_set_device_serialno</span><span class="w"> </span><span class="p">(</span><span class="n">keypackage</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;42&quot;</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">pskc_set_key_id</span><span class="w"> </span><span class="p">(</span><span class="n">keypackage</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;4711&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">pskc_set_key_algorithm</span><span class="w"> </span><span class="p">(</span><span class="n">keypackage</span><span class="p">,</span><span class="w"></span>
+<span class="w">			  </span><span class="s">&quot;urn:ietf:params:xml:ns:keyprov:pskc:hotp&quot;</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">pskc_set_key_algparm_resp_encoding</span><span class="w"> </span><span class="p">(</span><span class="n">keypackage</span><span class="p">,</span><span class="w"> </span><span class="n">PSKC_VALUEFORMAT_DECIMAL</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">pskc_set_key_algparm_resp_length</span><span class="w"> </span><span class="p">(</span><span class="n">keypackage</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">pskc_set_key_data_counter</span><span class="w"> </span><span class="p">(</span><span class="n">keypackage</span><span class="p">,</span><span class="w"> </span><span class="mi">42</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pskc_set_key_data_b64secret</span><span class="w"> </span><span class="p">(</span><span class="n">keypackage</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Zm9v&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">PSKC_CHECK_RC</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pskc_build_xml</span><span class="w"> </span><span class="p">(</span><span class="n">container</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">out</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">len</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">PSKC_CHECK_RC</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">fwrite</span><span class="w"> </span><span class="p">(</span><span class="n">out</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">len</span><span class="p">,</span><span class="w"> </span><span class="n">stdout</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">pskc_free</span><span class="w"> </span><span class="p">(</span><span class="n">out</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">pskc_done</span><span class="w"> </span><span class="p">(</span><span class="n">container</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">pskc_global_done</span><span class="w"> </span><span class="p">();</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<p>
+	  You would compile and use the example like this.
+	</p>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="n">jas</span><span class="err">@</span><span class="n">latte</span><span class="o">:~</span><span class="n">$</span><span class="w"> </span><span class="n">cc</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">pskccreate</span><span class="w"> </span><span class="n">pskccreate</span><span class="p">.</span><span class="n">c</span><span class="w"> </span><span class="n">$</span><span class="p">(</span><span class="n">pkg</span><span class="o">-</span><span class="n">config</span><span class="w"> </span><span class="o">--</span><span class="n">cflags</span><span class="w"> </span><span class="o">--</span><span class="n">libs</span><span class="w"> </span><span class="n">libpskc</span><span class="p">)</span><span class="w"></span>
+<span class="n">jas</span><span class="err">@</span><span class="n">latte</span><span class="o">:~</span><span class="n">$</span><span class="w"> </span><span class="p">.</span><span class="o">/</span><span class="n">pskccreate</span><span class="w"></span>
+<span class="o">&lt;?</span><span class="n">xml</span><span class="w"> </span><span class="n">version</span><span class="o">=</span><span class="s">&quot;1.0&quot;</span><span class="o">?&gt;</span><span class="w"></span>
+<span class="o">&lt;</span><span class="n">KeyContainer</span><span class="w"> </span><span class="n">xmlns</span><span class="o">=</span><span class="s">&quot;urn:ietf:params:xml:ns:keyprov:pskc&quot;</span><span class="w"> </span><span class="n">Version</span><span class="o">=</span><span class="s">&quot;1.0&quot;</span><span class="o">&gt;&lt;</span><span class="n">KeyPackage</span><span class="o">&gt;&lt;</span><span class="n">DeviceInfo</span><span class="o">&gt;&lt;</span><span class="n">Manufacturer</span><span class="o">&gt;</span><span class="n">Acme</span><span class="o">&lt;/</span><span class="n">Manufacturer</span><span class="o">&gt;&lt;</span><span class="n">SerialNo</span><span class="o">&gt;</span><span class="mi">42</span><span class="o">&lt;/</span><span class="n">SerialNo</span><span class="o">&gt;&lt;/</span><span class="n">DeviceInfo</span><span class="o">&gt;&lt;</span><span class="n">Key</span><span class="w"> </span><span class="n">Id</span><span class="o">=</span><span class="s">&quot;4711&quot;</span><span class="w"> </span><span class="n">Algorithm</span><span class="o">=</span><span class="s">&quot;urn:ietf:params:xml:ns:keyprov:pskc:hotp&quot;</span><span class="o">&gt;&lt;</span><span class="n">AlgorithmParameters</span><span class="o">&gt;&lt;</span><span class="n">ResponseFormat</span><span class="w"> </span><span class="n">Encoding</span><span class="o">=</span><span class="s">&quot;DECIMAL&quot;</span><span class="w"> </span><span class="n">Length</span><span class="o">=</span><span class="s">&quot;8&quot;</span><span class="o">/&gt;&lt;/</span><span class="n">AlgorithmParameters</span><span class="o">&gt;&lt;</span><span class="n">Data</span><span class="o">&gt;&lt;</span><span class="n">Secret</span><span class="o">&gt;&lt;</span><span class="n">PlainValue</span><span class="o">&gt;</span><span class="n">Zm9v</span><span class="o">&lt;/</span><span class="n">PlainValue</span><span class="o">&gt;&lt;/</span><span class="n">Secret</span><span class="o">&gt;&lt;</span><span class="n">Counter</span><span class="o">&gt;&lt;</span><span class="n">PlainValue</span><span class="o">&gt;</span><span class="mi">42</span><span class="o">&lt;/</span><span class="n">PlainValue</span><span class="o">&gt;&lt;/</span><span class="n">Counter</span><span class="o">&gt;&lt;/</span><span class="n">Data</span><span class="o">&gt;&lt;/</span><span class="n">Key</span><span class="o">&gt;&lt;/</span><span class="n">KeyPackage</span><span class="o">&gt;&lt;/</span><span class="n">KeyContainer</span><span class="o">&gt;</span><span class="w"></span>
+<span class="n">jas</span><span class="err">@</span><span class="n">latte</span><span class="o">:~</span><span class="n">$</span><span class="w"></span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<p>
+	  For more background and information what each field mean and
+	  which ones are required, you should read the PSKC
+	  specification (RFC 6030).  You may pretty print the XML
+	  generate using "xmllint --pretty 1" which may simplify
+	  reading it.  You may use "pskctool --info" to print a human
+	  summary of some PSKC data and validate the XML syntax using
+	  "pskctool --validate".
+	</p>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.33.1</div>
+</body>
+</html>

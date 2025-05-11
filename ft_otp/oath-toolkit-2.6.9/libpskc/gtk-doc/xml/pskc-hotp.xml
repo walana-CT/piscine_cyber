@@ -1,0 +1,27 @@
+<para><informalexample><programlisting>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;KeyContainer Version="1.0"
+	      xmlns="urn:ietf:params:xml:ns:keyprov:pskc"&gt;
+  &lt;KeyPackage&gt;
+    &lt;DeviceInfo&gt;
+      &lt;Manufacturer&gt;Manufacturer&lt;/Manufacturer&gt;
+      &lt;SerialNo&gt;987654321&lt;/SerialNo&gt;
+    &lt;/DeviceInfo&gt;
+    &lt;Key Id="12345678"
+         Algorithm="urn:ietf:params:xml:ns:keyprov:pskc:hotp"&gt;
+      &lt;AlgorithmParameters&gt;
+        &lt;ResponseFormat Length="8" Encoding="DECIMAL"/&gt;
+      &lt;/AlgorithmParameters&gt;
+      &lt;Data&gt;
+        &lt;Secret&gt;
+          &lt;PlainValue&gt;MTIzNDU2Nzg5MDEyMzQ1Njc4OTA=
+          &lt;/PlainValue&gt;
+        &lt;/Secret&gt;
+        &lt;Counter&gt;
+          &lt;PlainValue&gt;0&lt;/PlainValue&gt;
+        &lt;/Counter&gt;
+      &lt;/Data&gt;
+    &lt;/Key&gt;
+  &lt;/KeyPackage&gt;
+&lt;/KeyContainer&gt;
+</programlisting></informalexample></para>

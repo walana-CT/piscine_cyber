@@ -1,0 +1,8 @@
+<para><informalexample><programlisting>
+debug: unknown &lt;KeyContainer&gt; element &lt;EncryptionKey&gt;
+debug: unknown &lt;KeyContainer&gt; element &lt;MACMethod&gt;
+debug: non-compliant Manufacturer value: Manufacturer
+debug: unknown &lt;Secret&gt; element &lt;EncryptedValue&gt;
+debug: unknown &lt;Secret&gt; element &lt;ValueMAC&gt;
+warning: parse error (use -d to diagnose), output may be incomplete
+</programlisting></informalexample></para>

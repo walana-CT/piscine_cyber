@@ -1,0 +1,40 @@
+# Copyright (C) 2012-2023 Simon Josefsson
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+purpose "Manipulate Portable Symmetric Key Container (PSKC) data."
+
+description "This tool allows you to parse, print, validate, sign and verify PSKC data.  The input is provided in FILE or on standard input."
+
+option "strict" - "Fail hard on PSKC parse error" flag off
+option "debug" d "Show debug messages on stderr" flag off
+option "quiet" q "Quiet operation" flag off
+option "verbose" v "Produce more output" flag off
+
+section "Selecting one of the following modes is required"
+
+defmode "info"
+modeoption "info" i "Parse and print human readable summary of PSKC input" mode="info" flag off
+
+defmode "validate"
+modeoption "validate" e "Validate PSKC input against XML Schema" mode="validate" flag off
+
+defmode "sign" modedesc="Digitally sign PSKC data"
+modeoption "sign" - "Sign PSKC input" mode="sign" flag off
+modeoption "sign-key" - "Private key to sign with" mode="sign" string typestr="FILE" dependon="sign" required
+modeoption "sign-crt" - "X.509 certificate to sign with" mode="sign" string typestr="FILE" dependon="sign" required
+
+defmode "verify" modedesc="Verify digitally signed PSKC data"
+modeoption "verify" - "Verify signed PSKC input" mode="verify" flag off
+modeoption "verify-crt" - "Trusted X.509 certificate for verification" mode="verify" string typestr="FILE" dependon="verify" required
