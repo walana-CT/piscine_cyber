@@ -8,7 +8,6 @@
 #include "crypto.hpp"
 #include "debug.hpp"
 
-
 // Fonction pour lire la clé depuis un fichier
 std::string read_key_from_file(const std::string& filename) {
     std::ifstream file(filename, std::ios::in | std::ios::binary);
@@ -56,7 +55,23 @@ int main(int argc, char* argv[]) {
         }
 
         uint64_t counter = static_cast<uint64_t>(std::time(nullptr)) / 30;  // TOTP style counter
+
+        #if DEBUG
+            std::cout << "about to generate totp" << std::endl;
+            std::cout << "the code is given by following formula" << std::endl << "  HOTP(K,C) = Truncate(HMAC-SHA-1(K,C))" << std::endl << std::endl;
+            std::cout << "  K : key stored in " << filename << std::endl << "  ";
+            print_hex(key); 
+            std::cout << std::endl;        
+            std::cout << "  C : message. here obtained via global unix time" << filename << std::endl << "  ";
+            std::cout << counter << std::endl << std::endl;
+        #endif
+
         uint32_t otp = generate_hotp(key, counter);
+
+        #if DEBUG
+            std::cout << "obtained otp: " << otp << std::endl;
+        #endif
+
         std::cout << std::setfill('0') << std::setw(6) << otp << std::endl;
 
     } else {

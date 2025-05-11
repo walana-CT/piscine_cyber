@@ -47,6 +47,7 @@ GFLAG = -g3
 #	Sources		#
 #---------------#
 FILES +=	crypto.cpp\
+			debug.cpp\
 			hmac_sha1.cpp\
 			hotp.cpp\
 			main.cpp

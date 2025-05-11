@@ -1,10 +1,40 @@
 #include "hmac_sha1.hpp"
 #include <vector>
 #include <cstdint>
+#include <iomanip>
+#include <iostream>
+#include "debug.hpp"
+#include "picosha2.h"
+
+std::vector<uint8_t> sha1_picosha2(const std::vector<uint8_t>& data) {
+    std::vector<unsigned char> hash(picosha2::k_digest_size);
+    picosha2::hash256(data.begin(), data.end(), hash.begin(), hash.end());
+    hash.resize(20); // SHA-1 uses 160-bit output
+    return hash;
+}
+
+
+void test_sha1(const std::string& msg_str, const std::string& expected_hex) {
+    std::vector<uint8_t> data(msg_str.begin(), msg_str.end());
+    std::vector<uint8_t> digest = sha1(data);
+
+    std::ostringstream oss;
+    for (uint8_t b : digest)
+        oss << std::hex << std::setw(2) << std::setfill('0') << (int)b;
+
+    std::string result = oss.str();
+    std::cout << "Input    : " << msg_str << "\n";
+    std::cout << "Expected : " << expected_hex << "\n";
+    std::cout << "Got      : " << result << "\n";
+    std::cout << ((result == expected_hex) ? "✅ OK" : "❌ MISMATCH") << "\n";
+}
+
+
 
 // Définir la taille des blocs (512 bits pour SHA-1)
 #define SHA1_BLOCK_SIZE 64
 #define SHA1_DIGEST_SIZE 20
+
 
 // Fonction de rotation de bits à gauche (shift circulaire)
 inline uint32_t ROTATE_LEFT(uint32_t value, uint32_t bits) {
@@ -68,7 +98,13 @@ std::vector<uint8_t> sha1(const std::vector<uint8_t>& data) {
 
         // Application de la fonction SHA-1 pour chaque étape
         for (int t = 0; t < 80; ++t) {
-            uint32_t temp = ROTATE_LEFT(A, 5) + F(t, B, C, D) + E + W[t] + 0x5A827999;
+            uint32_t K;
+            if (t < 20)       K = 0x5A827999;
+            else if (t < 40)  K = 0x6ED9EBA1;
+            else if (t < 60)  K = 0x8F1BBCDC;
+            else              K = 0xCA62C1D6;
+
+            uint32_t temp = ROTATE_LEFT(A, 5) + F(t, B, C, D) + E + W[t] + K;
             E = D;
             D = C;
             C = ROTATE_LEFT(B, 30);
@@ -116,12 +152,20 @@ std::vector<uint8_t> sha1(const std::vector<uint8_t>& data) {
 
 std::vector<uint8_t> hmac_sha1(const std::vector<uint8_t>& key, const uint8_t* msg, size_t msg_len) {
     // Étape 1: Si la clé est plus longue que 64 octets, on la hache avec SHA-1
+    test_sha1("abc", "a9993e364706816aba3e25717850c26c9cd0d89d");
+
     std::vector<uint8_t> key_copy = key;
     if (key_copy.size() > SHA1_BLOCK_SIZE) {
+        #if DEBUG
+            std::cout << "key hashed with sha 1 to reduce it to 64-bit" << std::endl;
+        #endif
         key_copy = sha1(key_copy); // Hacher la clé avec SHA-1
     }
 
     // Étape 2: Si la clé est plus courte que 64 octets, on la complète avec des zéros
+    #if DEBUG
+        std::cout << "key filled with 0 to make it it to 64-bit" << std::endl;
+    #endif
     if (key_copy.size() < SHA1_BLOCK_SIZE) {
         key_copy.resize(SHA1_BLOCK_SIZE, 0x00); // Compléter avec des zéros
     }
@@ -136,9 +180,30 @@ std::vector<uint8_t> hmac_sha1(const std::vector<uint8_t>& key, const uint8_t* m
         opad[i] ^= key_copy[i];
     }
 
+
+    std::vector<uint8_t> ref = sha1_picosha2(ipad);  // ou sha1_picosha2
+    std::vector<uint8_t> mine = sha1(ipad);
+
+    if (ref == mine) {
+        std::cout << "✅ SHA1 outputs match!" << std::endl;
+    } else {
+        std::cout << "❌ SHA1 mismatch" << std::endl;
+    }
+
     // Étape 3: Calculer le HMAC
     // Appliquer SHA-1 sur (ipad || msg)
+    #if DEBUG
+        std::cout << "ipad before sha1: " << std::endl;
+        for (int i = 0; i < 8; ++i) {
+            std::cout << std::hex << std::setw(2) << std::setfill('0') << (int)ipad[i] << " ";
+        }
+        std::cout << std::dec << std::endl;  // reset to decimal output
+    #endif
     std::vector<uint8_t> inner_hash = sha1(ipad); // Appliquer SHA-1 sur le pad interne
+    #if DEBUG
+        std::cout << "ipad after sha1: " << std::endl;
+        print_hex(inner_hash);
+    #endif
     inner_hash.insert(inner_hash.end(), msg, msg + msg_len); // Ajouter le message
 
     // Appliquer SHA-1 sur (opad || hash(ipad || msg))
