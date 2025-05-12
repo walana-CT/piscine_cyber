@@ -4,12 +4,9 @@
 #include "debug.hpp"
 #include <iostream>
 #include "iomanip"
+#include "debug.hpp"
 
 uint32_t generate_hotp(const std::vector<uint8_t>& key, uint64_t counter) {
-
-    #if DEBUG
-        std::cout << "inside generate hotp" << std::endl;
-    #endif
 
     uint8_t msg[8];
     for (int i = 7; i >= 0; --i) {
@@ -18,22 +15,24 @@ uint32_t generate_hotp(const std::vector<uint8_t>& key, uint64_t counter) {
     }
 
     #if DEBUG
-        std::cout << "msg generated from counter: " << std::endl;
+        std::cout << "  ";
         for (int i = 0; i < 8; ++i) {
             std::cout << std::hex << std::setw(2) << std::setfill('0') << (int)msg[i] << " ";
         }
-        std::cout << std::dec << std::endl;  // reset to decimal output
-        std::cout << "launching hmac_sha1 algo " << std::endl;        
+        std::cout << std::dec << std::endl << std::endl << std::endl;  // reset to decimal output      
     #endif
 
     std::vector<uint8_t> hmac = hmac_sha1(key, msg, 8);
 
     #if DEBUG
-        std::cout << "dynamic truncation of hmac: " << std::endl;
-        for (int i = 0; i < 8; ++i) {
-            std::cout << std::hex << std::setw(2) << std::setfill('0') << (int)hmac[i] << " ";
-        }
-        std::cout << std::dec << std::endl;  // reset to decimal output  
+        print_hex(hmac);
+        std::cout << std::endl << std::endl;
+    #endif
+
+
+    #if DEBUG
+        std::cout << "    dynamic truncation of hmac: " << std::endl;
+        print_hex(hmac);
     #endif
 
     int offset = hmac[19] & 0x0F;

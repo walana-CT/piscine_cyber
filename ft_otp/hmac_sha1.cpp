@@ -4,15 +4,6 @@
 #include <iomanip>
 #include <iostream>
 #include "debug.hpp"
-#include "picosha2.h"
-
-std::vector<uint8_t> sha1_picosha2(const std::vector<uint8_t>& data) {
-    std::vector<unsigned char> hash(picosha2::k_digest_size);
-    picosha2::hash256(data.begin(), data.end(), hash.begin(), hash.end());
-    hash.resize(20); // SHA-1 uses 160-bit output
-    return hash;
-}
-
 
 void test_sha1(const std::string& msg_str, const std::string& expected_hex) {
     std::vector<uint8_t> data(msg_str.begin(), msg_str.end());
@@ -28,7 +19,6 @@ void test_sha1(const std::string& msg_str, const std::string& expected_hex) {
     std::cout << "Got      : " << result << "\n";
     std::cout << ((result == expected_hex) ? "✅ OK" : "❌ MISMATCH") << "\n";
 }
-
 
 
 // Définir la taille des blocs (512 bits pour SHA-1)
@@ -151,8 +141,12 @@ std::vector<uint8_t> sha1(const std::vector<uint8_t>& data) {
 }
 
 std::vector<uint8_t> hmac_sha1(const std::vector<uint8_t>& key, const uint8_t* msg, size_t msg_len) {
-    // Étape 1: Si la clé est plus longue que 64 octets, on la hache avec SHA-1
-    test_sha1("abc", "a9993e364706816aba3e25717850c26c9cd0d89d");
+    // Step 1: if the key is longer than 64-bytes, we hash it with SHA-1
+        #if DEBUG
+            std::cout << "  calculating HMAC-SHA-1(K,C)" << std::endl;
+            std::cout << "  HMAC-SHA-1(K,C) = SAH-1(K XOR opad, SHA-1(K XOR ipad, C))" << std::endl << std::endl;            
+        #endif
+
 
     std::vector<uint8_t> key_copy = key;
     if (key_copy.size() > SHA1_BLOCK_SIZE) {
@@ -162,54 +156,55 @@ std::vector<uint8_t> hmac_sha1(const std::vector<uint8_t>& key, const uint8_t* m
         key_copy = sha1(key_copy); // Hacher la clé avec SHA-1
     }
 
-    // Étape 2: Si la clé est plus courte que 64 octets, on la complète avec des zéros
+    //Step 2: if the key is shorter than 64-bytes, we fill it with zeros.
     #if DEBUG
-        std::cout << "key filled with 0 to make it it to 64-bit" << std::endl;
+        std::cout << "key filled with 0 to make it it to 64-bit" << std::endl << std::endl;
     #endif
     if (key_copy.size() < SHA1_BLOCK_SIZE) {
         key_copy.resize(SHA1_BLOCK_SIZE, 0x00); // Compléter avec des zéros
     }
 
-    // Créer les pads ipad et opad
+    // creating opad and ipad
     std::vector<uint8_t> ipad(SHA1_BLOCK_SIZE, 0x36);
     std::vector<uint8_t> opad(SHA1_BLOCK_SIZE, 0x5C);
 
-    // XOR la clé avec ipad et opad
+    // XOR the key with opad and ipad
     for (size_t i = 0; i < SHA1_BLOCK_SIZE; ++i) {
         ipad[i] ^= key_copy[i];
         opad[i] ^= key_copy[i];
     }
 
-
-    std::vector<uint8_t> ref = sha1_picosha2(ipad);  // ou sha1_picosha2
-    std::vector<uint8_t> mine = sha1(ipad);
-
-    if (ref == mine) {
-        std::cout << "✅ SHA1 outputs match!" << std::endl;
-    } else {
-        std::cout << "❌ SHA1 mismatch" << std::endl;
-    }
-
-    // Étape 3: Calculer le HMAC
-    // Appliquer SHA-1 sur (ipad || msg)
     #if DEBUG
-        std::cout << "ipad before sha1: " << std::endl;
-        for (int i = 0; i < 8; ++i) {
-            std::cout << std::hex << std::setw(2) << std::setfill('0') << (int)ipad[i] << " ";
-        }
-        std::cout << std::dec << std::endl;  // reset to decimal output
+        std::cout << "K XOR opad = ";
+        print_vect(opad);
+        std::cout << std::endl << "K XOR ipad = ";
+        print_vect(ipad);  
+        std::cout << std::endl << std::endl;     
+    #endif    
+
+    // Step 3: claculating the hmac
+    //calculating SHA-1(K XOR ipad, C)
+    std::vector<uint8_t> inner_input = ipad;
+    inner_input.insert(inner_input.end(), msg, msg + msg_len);
+    #if DEBUG
+        std::cout << "    Calculating: innerhash = SHA-1(K XOR ipad, C)" << std::endl;
+        print_hex(inner_input);
+        std::cout << " ---->" << std::endl;
     #endif
-    std::vector<uint8_t> inner_hash = sha1(ipad); // Appliquer SHA-1 sur le pad interne
+    std::vector<uint8_t> inner_hash = sha1(inner_input);
     #if DEBUG
-        std::cout << "ipad after sha1: " << std::endl;
         print_hex(inner_hash);
+        std::cout << std::endl << std::endl;
     #endif
-    inner_hash.insert(inner_hash.end(), msg, msg + msg_len); // Ajouter le message
 
     // Appliquer SHA-1 sur (opad || hash(ipad || msg))
-    std::vector<uint8_t> outer_hash = sha1(opad);
-    outer_hash.insert(outer_hash.end(), inner_hash.begin(), inner_hash.end());
+    std::vector<uint8_t> outer_input = opad;
+    outer_input.insert(outer_input.end(), inner_hash.begin(), inner_hash.end());
+    #if DEBUG
+        std::cout << "    Calculating: HMAC-SHA-1(K,C) = SAH-1(K XOR opad, innerhash)" << std::endl;
+        print_hex(inner_input);
+        std::cout << " ---->" << std::endl;
+    #endif
+    return sha1(outer_input);
 
-    // Retourner le résultat du hachage final
-    return sha1(outer_hash);
 }

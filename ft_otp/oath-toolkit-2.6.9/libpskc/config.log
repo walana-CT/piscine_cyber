@@ -1140,7 +1140,7 @@ conftest.c: In function 'main':
 conftest.c:63:1: warning: implicit declaration of function 'unreachable' [-Wimplicit-function-declaration]
    63 | unreachable ();
       | ^~~~~~~~~~~
-/usr/bin/ld: /tmp/ccztRoC7.o: in function `main':
+/usr/bin/ld: /tmp/ccfTSQzm.o: in function `main':
 /home/rficht/Documents/piscine_cyber/ft_otp/oath-toolkit-2.6.9/libpskc/conftest.c:63: undefined reference to `unreachable'
 collect2: error: ld returned 1 exit status
 configure:17790: $? = 1
@@ -1972,14 +1972,19 @@ config.status:1895: creating man/Makefile
 config.status:1895: creating schemas/Makefile
 config.status:1895: creating tests/Makefile
 config.status:1895: creating config.h
+config.status:2076: config.h is unchanged
 config.status:2124: executing depfiles commands
 config.status:2201: cd .       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for 'am--depfiles'.
 config.status:2206: $? = 0
 config.status:2201: cd examples       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for 'am--depfiles'.
 config.status:2206: $? = 0
 config.status:2201: cd gl       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for 'am--depfiles'.
 config.status:2206: $? = 0
 config.status:2201: cd tests       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for 'am--depfiles'.
 config.status:2206: $? = 0
 config.status:2124: executing libtool commands
 configure:25770: summary of build options:

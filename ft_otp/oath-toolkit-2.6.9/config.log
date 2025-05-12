@@ -339,7 +339,7 @@ configure:5240: result: x86_64-pc-linux-gnu
 configure:5273: autobuild project... oath-toolkit
 configure:5279: autobuild revision... 2.6.9
 configure:5284: autobuild hostname... k2r2p8.42mulhouse.fr
-configure:5295: autobuild timestamp... 20250510T091339Z
+configure:5295: autobuild timestamp... 20250512T081150Z
 configure:5345: checking for a sed that does not truncate output
 configure:5415: result: /usr/bin/sed
 configure:5422: checking for C compiler option to allow warnings
@@ -374,6 +374,7 @@ config.status:822: creating gl/Makefile
 config.status:822: creating gl/tests/Makefile
 config.status:1025: executing depfiles commands
 config.status:1102: cd gl       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for 'am--depfiles'.
 config.status:1107: $? = 0
 configure:7119: === configuring in liboath (/home/rficht/Documents/piscine_cyber/ft_otp/oath-toolkit-2.6.9/liboath)
 configure:7180: running /bin/bash ./configure --disable-option-checking '--prefix=/home/rficht/.local'  --cache-file=/dev/null --srcdir=.

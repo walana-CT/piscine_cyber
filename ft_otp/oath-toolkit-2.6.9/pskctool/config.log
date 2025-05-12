@@ -801,7 +801,7 @@ configure:15894: checking whether source code line length is unlimited
 configure:15919: result: yes
 configure:16035: checking for _set_invalid_parameter_handler
 configure:16035: gcc -o conftest -g -O2   conftest.c  >&5
-/usr/bin/ld: /tmp/cchMxwlm.o: in function `main':
+/usr/bin/ld: /tmp/ccDQCP5p.o: in function `main':
 /home/rficht/Documents/piscine_cyber/ft_otp/oath-toolkit-2.6.9/pskctool/conftest.c:79: undefined reference to `_set_invalid_parameter_handler'
 collect2: error: ld returned 1 exit status
 configure:16035: $? = 1
@@ -903,7 +903,7 @@ configure:16035: $? = 0
 configure:16035: result: yes
 configure:16035: checking for getexecname
 configure:16035: gcc -o conftest -g -O2   conftest.c  >&5
-/usr/bin/ld: /tmp/ccnlJwjm.o: in function `main':
+/usr/bin/ld: /tmp/ccGZkXSF.o: in function `main':
 /home/rficht/Documents/piscine_cyber/ft_otp/oath-toolkit-2.6.9/pskctool/conftest.c:82: undefined reference to `getexecname'
 collect2: error: ld returned 1 exit status
 configure:16035: $? = 1
@@ -996,7 +996,7 @@ configure: failed program was:
 configure:16035: result: no
 configure:16035: checking for memset_explicit
 configure:16035: gcc -o conftest -g -O2   conftest.c  >&5
-/usr/bin/ld: /tmp/cczGaTQt.o: in function `main':
+/usr/bin/ld: /tmp/ccPVDvbN.o: in function `main':
 /home/rficht/Documents/piscine_cyber/ft_otp/oath-toolkit-2.6.9/pskctool/conftest.c:82: undefined reference to `memset_explicit'
 collect2: error: ld returned 1 exit status
 configure:16035: $? = 1
@@ -1089,7 +1089,7 @@ configure: failed program was:
 configure:16035: result: no
 configure:16035: checking for memset_s
 configure:16035: gcc -o conftest -g -O2   conftest.c  >&5
-/usr/bin/ld: /tmp/ccyEGJjY.o: in function `main':
+/usr/bin/ld: /tmp/ccqeBOGq.o: in function `main':
 /home/rficht/Documents/piscine_cyber/ft_otp/oath-toolkit-2.6.9/pskctool/conftest.c:82: undefined reference to `memset_s'
 collect2: error: ld returned 1 exit status
 configure:16035: $? = 1
@@ -2131,7 +2131,7 @@ conftest.c: In function 'main':
 conftest.c:79:1: warning: implicit declaration of function 'unreachable' [-Wimplicit-function-declaration]
    79 | unreachable ();
       | ^~~~~~~~~~~
-/usr/bin/ld: /tmp/ccbvKMPO.o: in function `main':
+/usr/bin/ld: /tmp/ccx7VaRl.o: in function `main':
 /home/rficht/Documents/piscine_cyber/ft_otp/oath-toolkit-2.6.9/pskctool/conftest.c:79: undefined reference to `unreachable'
 collect2: error: ld returned 1 exit status
 configure:21229: $? = 1
@@ -2585,7 +2585,7 @@ configure:24530: result: yes
 configure:24583: checking for getprogname
 configure:24620: checking for getprogname
 configure:24620: gcc -o conftest -g -O2   conftest.c  >&5
-/usr/bin/ld: /tmp/ccJbVIDi.o: in function `main':
+/usr/bin/ld: /tmp/ccQIqWuy.o: in function `main':
 /home/rficht/Documents/piscine_cyber/ft_otp/oath-toolkit-2.6.9/pskctool/conftest.c:124: undefined reference to `getprogname'
 collect2: error: ld returned 1 exit status
 configure:24620: $? = 1
@@ -2982,7 +2982,7 @@ configure: failed program was:
 configure:24969: result: no
 configure:25069: checking for explicit_memset
 configure:25069: gcc -o conftest -g -O2   conftest.c  >&5
-/usr/bin/ld: /tmp/cceWTH9E.o: in function `main':
+/usr/bin/ld: /tmp/ccjPmJ08.o: in function `main':
 /home/rficht/Documents/piscine_cyber/ft_otp/oath-toolkit-2.6.9/pskctool/conftest.c:131: undefined reference to `explicit_memset'
 collect2: error: ld returned 1 exit status
 configure:25069: $? = 1
@@ -4117,10 +4117,13 @@ config.status:2111: creating Makefile
 config.status:2111: creating gl/Makefile
 config.status:2111: creating tests/Makefile
 config.status:2111: creating config.h
+config.status:2292: config.h is unchanged
 config.status:2340: executing depfiles commands
 config.status:2417: cd .       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for 'am--depfiles'.
 config.status:2422: $? = 0
 config.status:2417: cd gl       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for 'am--depfiles'.
 config.status:2422: $? = 0
 config.status:2340: executing libtool commands
 

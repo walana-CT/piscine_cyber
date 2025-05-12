@@ -805,7 +805,7 @@ configure:15885: checking whether source code line length is unlimited
 configure:15910: result: yes
 configure:16026: checking for _set_invalid_parameter_handler
 configure:16026: gcc -o conftest -g -O2   conftest.c  >&5
-/usr/bin/ld: /tmp/ccryUIur.o: in function `main':
+/usr/bin/ld: /tmp/ccBo2NXO.o: in function `main':
 /home/rficht/Documents/piscine_cyber/ft_otp/oath-toolkit-2.6.9/oathtool/conftest.c:79: undefined reference to `_set_invalid_parameter_handler'
 collect2: error: ld returned 1 exit status
 configure:16026: $? = 1
@@ -907,7 +907,7 @@ configure:16026: $? = 0
 configure:16026: result: yes
 configure:16026: checking for getexecname
 configure:16026: gcc -o conftest -g -O2   conftest.c  >&5
-/usr/bin/ld: /tmp/ccg9x00m.o: in function `main':
+/usr/bin/ld: /tmp/ccLSrzNj.o: in function `main':
 /home/rficht/Documents/piscine_cyber/ft_otp/oath-toolkit-2.6.9/oathtool/conftest.c:82: undefined reference to `getexecname'
 collect2: error: ld returned 1 exit status
 configure:16026: $? = 1
@@ -1020,7 +1020,7 @@ configure:16026: $? = 0
 configure:16026: result: yes
 configure:16026: checking for vasnprintf
 configure:16026: gcc -o conftest -g -O2   conftest.c  >&5
-/usr/bin/ld: /tmp/cclFDj2x.o: in function `main':
+/usr/bin/ld: /tmp/cc2WOBvf.o: in function `main':
 /home/rficht/Documents/piscine_cyber/ft_otp/oath-toolkit-2.6.9/oathtool/conftest.c:87: undefined reference to `vasnprintf'
 collect2: error: ld returned 1 exit status
 configure:16026: $? = 1
@@ -2535,7 +2535,7 @@ conftest.c: In function 'main':
 conftest.c:93:1: warning: implicit declaration of function 'unreachable' [-Wimplicit-function-declaration]
    93 | unreachable ();
       | ^~~~~~~~~~~
-/usr/bin/ld: /tmp/ccb0qqqc.o: in function `main':
+/usr/bin/ld: /tmp/cckHt0aq.o: in function `main':
 /home/rficht/Documents/piscine_cyber/ft_otp/oath-toolkit-2.6.9/oathtool/conftest.c:93: undefined reference to `unreachable'
 collect2: error: ld returned 1 exit status
 configure:21879: $? = 1
@@ -3310,7 +3310,7 @@ configure:26377: result: yes
 configure:26442: checking for getprogname
 configure:26479: checking for getprogname
 configure:26479: gcc -o conftest -g -O2   conftest.c  >&5
-/usr/bin/ld: /tmp/ccu0ECbl.o: in function `main':
+/usr/bin/ld: /tmp/ccwWt5KU.o: in function `main':
 /home/rficht/Documents/piscine_cyber/ft_otp/oath-toolkit-2.6.9/oathtool/conftest.c:156: undefined reference to `getprogname'
 collect2: error: ld returned 1 exit status
 configure:26479: $? = 1
@@ -3653,7 +3653,7 @@ configure:26822: $? = 0
 configure:26830: result: yes
 configure:26984: checking for __mktime_internal
 configure:26984: gcc -o conftest -g -O2   conftest.c  >&5
-/usr/bin/ld: /tmp/ccFYsNzp.o: in function `main':
+/usr/bin/ld: /tmp/ccjuzF45.o: in function `main':
 /home/rficht/Documents/piscine_cyber/ft_otp/oath-toolkit-2.6.9/oathtool/conftest.c:168: undefined reference to `__mktime_internal'
 collect2: error: ld returned 1 exit status
 configure:26984: $? = 1
@@ -5593,10 +5593,13 @@ config.status:2198: creating Makefile
 config.status:2198: creating gl/Makefile
 config.status:2198: creating tests/Makefile
 config.status:2198: creating config.h
+config.status:2379: config.h is unchanged
 config.status:2427: executing depfiles commands
 config.status:2504: cd .       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for 'am--depfiles'.
 config.status:2509: $? = 0
 config.status:2504: cd gl       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for 'am--depfiles'.
 config.status:2509: $? = 0
 config.status:2427: executing libtool commands
 

@@ -847,7 +847,7 @@ configure:16711: $? = 0
 configure:16711: result: yes
 configure:16711: checking for _set_invalid_parameter_handler
 configure:16711: gcc -o conftest -g -O2   conftest.c  >&5
-/usr/bin/ld: /tmp/ccKmS5td.o: in function `main':
+/usr/bin/ld: /tmp/cchrIgPR.o: in function `main':
 /home/rficht/Documents/piscine_cyber/ft_otp/oath-toolkit-2.6.9/liboath/conftest.c:87: undefined reference to `_set_invalid_parameter_handler'
 collect2: error: ld returned 1 exit status
 configure:16711: $? = 1
@@ -953,7 +953,7 @@ configure:16711: $? = 0
 configure:16711: result: yes
 configure:16711: checking for fpurge
 configure:16711: gcc -o conftest -g -O2   conftest.c  >&5
-/usr/bin/ld: /tmp/ccqT3GSA.o: in function `main':
+/usr/bin/ld: /tmp/ccHMYHNN.o: in function `main':
 /home/rficht/Documents/piscine_cyber/ft_otp/oath-toolkit-2.6.9/liboath/conftest.c:89: undefined reference to `fpurge'
 collect2: error: ld returned 1 exit status
 configure:16711: $? = 1
@@ -1091,7 +1091,7 @@ configure:16711: $? = 0
 configure:16711: result: yes
 configure:16711: checking for vasnprintf
 configure:16711: gcc -o conftest -g -O2   conftest.c  >&5
-/usr/bin/ld: /tmp/ccjS5IHO.o: in function `main':
+/usr/bin/ld: /tmp/ccG1TctA.o: in function `main':
 /home/rficht/Documents/piscine_cyber/ft_otp/oath-toolkit-2.6.9/liboath/conftest.c:97: undefined reference to `vasnprintf'
 collect2: error: ld returned 1 exit status
 configure:16711: $? = 1
@@ -2907,7 +2907,7 @@ conftest.c: In function 'main':
 conftest.c:103:1: warning: implicit declaration of function 'unreachable' [-Wimplicit-function-declaration]
   103 | unreachable ();
       | ^~~~~~~~~~~
-/usr/bin/ld: /tmp/cc7RxRK8.o: in function `main':
+/usr/bin/ld: /tmp/cc7Zv3hZ.o: in function `main':
 /home/rficht/Documents/piscine_cyber/ft_otp/oath-toolkit-2.6.9/liboath/conftest.c:103: undefined reference to `unreachable'
 collect2: error: ld returned 1 exit status
 configure:23539: $? = 1
@@ -4059,7 +4059,7 @@ configure:30384: checking whether fflush works on input streams
 configure:30470: result: no
 configure:30505: checking for _fseeki64
 configure:30505: gcc -o conftest -g -O2   conftest.c  >&5
-/usr/bin/ld: /tmp/cclaex3H.o: in function `main':
+/usr/bin/ld: /tmp/cctDOuLh.o: in function `main':
 /home/rficht/Documents/piscine_cyber/ft_otp/oath-toolkit-2.6.9/liboath/conftest.c:178: undefined reference to `_fseeki64'
 collect2: error: ld returned 1 exit status
 configure:30505: $? = 1
@@ -6832,12 +6832,16 @@ config.status:2333: creating gtk-doc/Makefile
 config.status:2333: creating gtk-doc/version.xml
 config.status:2333: creating man/Makefile
 config.status:2333: creating config.h
+config.status:2514: config.h is unchanged
 config.status:2562: executing depfiles commands
 config.status:2639: cd .       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for 'am--depfiles'.
 config.status:2644: $? = 0
 config.status:2639: cd gl       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for 'am--depfiles'.
 config.status:2644: $? = 0
 config.status:2639: cd tests       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for 'am--depfiles'.
 config.status:2644: $? = 0
 config.status:2562: executing libtool commands
 
