@@ -7,6 +7,7 @@
 #include <cstring>
 #include <iomanip>
 #include <ctime>
+#include "hmac_sha1.hpp"
 // Active ou désactive le mode debug
 #define DEBUG 1
 #define DEBUGSHA1 1

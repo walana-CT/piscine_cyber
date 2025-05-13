@@ -5,42 +5,27 @@
 #include <iostream>
 #include "debug.hpp"
 
-void test_sha1(const std::string& msg_str, const std::string& expected_hex) {
-    std::vector<uint8_t> data(msg_str.begin(), msg_str.end());
-    std::vector<uint8_t> digest = sha1(data);
-
-    std::ostringstream oss;
-    for (uint8_t b : digest)
-        oss << std::hex << std::setw(2) << std::setfill('0') << (int)b;
-
-    std::string result = oss.str();
-    std::cout << "Input    : " << msg_str << "\n";
-    std::cout << "Expected : " << expected_hex << "\n";
-    std::cout << "Got      : " << result << "\n";
-    std::cout << ((result == expected_hex) ? "✅ OK" : "❌ MISMATCH") << "\n";
-}
-
 
 // Définir la taille des blocs (512 bits pour SHA-1)
 #define SHA1_BLOCK_SIZE 64
 #define SHA1_DIGEST_SIZE 20
 
-
-// Fonction de rotation de bits à gauche (shift circulaire)
+// Left rotation bits function (circular shift)
 inline uint32_t ROTATE_LEFT(uint32_t value, uint32_t bits) {
     return (value << bits) | (value >> (32 - bits));
 }
 
-// Fonction F selon l'algorithme SHA-1 pour chaque étape
+//The F function, depending  on current step
 inline uint32_t F(uint32_t t, uint32_t B, uint32_t C, uint32_t D) {
-    if (t < 20) return (B & C) | (~B & D); // Fonction F pour 0 <= t < 20
-    if (t < 40) return B ^ C ^ D;          // Fonction F pour 20 <= t < 40
-    if (t < 60) return (B & C) | (B & D) | (C & D); // Fonction F pour 40 <= t < 60
-    return B ^ C ^ D;                      // Fonction F pour t >= 60
+    if (t < 20) return (B & C) | (~B & D);          // Choose
+    if (t < 40) return B ^ C ^ D;                   // Parity
+    if (t < 60) return (B & C) | (B & D) | (C & D); // Majority
+    return B ^ C ^ D;                               // Parity      
 }
 
 std::vector<uint8_t> sha1(const std::vector<uint8_t>& data) {
     size_t length = data.size();
+    //initial vector
     uint32_t h0 = 0x67452301;
     uint32_t h1 = 0xEFCDAB89;
     uint32_t h2 = 0x98BADCFE;
@@ -49,25 +34,25 @@ std::vector<uint8_t> sha1(const std::vector<uint8_t>& data) {
 
     std::vector<uint8_t> msg(data.begin(), data.end());
 
-    // 1. Padding du message pour qu'il ait une longueur multiple de 512 bits
-    msg.push_back(0x80); // Ajouter 0x80 (bit '1' suivi de 7 bits '0')
+    // 1. Padding message in order to make it's length a multiple of 512 bits
+    msg.push_back(0x80); // add 0x80 (bit '1' followed by 7 bits '0')
 
-    // Compléter jusqu'à ce que la taille soit 64 bits avant la fin du message
+    // Complete until the length be 64-bits before the end of the message
     while (msg.size() % SHA1_BLOCK_SIZE != 56) {
-        msg.push_back(0x00); // Ajouter des zéros jusqu'à atteindre 56 octets (448 bits)
+        msg.push_back(0x00); // adding zeros until 56 octets (448 bits)
     }
 
-    // 2. Ajouter la longueur du message original en bits (sur 8 octets)
+    // 2. add the length of the original message in bits (on 8 bytes)
     uint64_t bit_length = length * 8;
     for (int j = 0; j < 8; ++j) {
         msg.push_back(static_cast<uint8_t>((bit_length >> (56 - j * 8)) & 0xFF));
     }
 
-    // 3. Traitement du message par blocs de 512 bits (64 octets)
+    // 3. Processing the message block by block (64 bytes)
     for (size_t i = 0; i < msg.size() / SHA1_BLOCK_SIZE; ++i) {
         uint32_t W[80];
 
-        // Remplir les 16 premiers mots de W (32 bits chacun)
+        // Filling the 16 first words (32 bits each)
         for (int t = 0; t < 16; ++t) {
             W[t] = (msg[i * SHA1_BLOCK_SIZE + t * 4] << 24) |
                    (msg[i * SHA1_BLOCK_SIZE + t * 4 + 1] << 16) |
@@ -75,18 +60,19 @@ std::vector<uint8_t> sha1(const std::vector<uint8_t>& data) {
                    (msg[i * SHA1_BLOCK_SIZE + t * 4 + 3]);
         }
 
-        // Étendre les 16 mots en 80 mots
+        // Extend the sixteen 32-bit words into eighty 32-bit words
         for (int t = 16; t < 80; ++t) {
             W[t] = ROTATE_LEFT(W[t - 3] ^ W[t - 8] ^ W[t - 14] ^ W[t - 16], 1);
         }
 
+        // Initialize hash value for this block
         uint32_t A = h0;
         uint32_t B = h1;
         uint32_t C = h2;
         uint32_t D = h3;
         uint32_t E = h4;
 
-        // Application de la fonction SHA-1 pour chaque étape
+        // main loop
         for (int t = 0; t < 80; ++t) {
             uint32_t K;
             if (t < 20)       K = 0x5A827999;
@@ -102,7 +88,7 @@ std::vector<uint8_t> sha1(const std::vector<uint8_t>& data) {
             A = temp;
         }
 
-        // Mise à jour des variables de hachage
+        // Updating hashing variables
         h0 += A;
         h1 += B;
         h2 += C;
@@ -110,7 +96,7 @@ std::vector<uint8_t> sha1(const std::vector<uint8_t>& data) {
         h4 += E;
     }
 
-    // 4. Retourner le résultat sous forme de digest (20 octets)
+    // 4. Return the result under the shape of a digest (20 bits)
     std::vector<uint8_t> result(SHA1_DIGEST_SIZE);
     result[0] = (h0 >> 24) & 0xFF;
     result[1] = (h0 >> 16) & 0xFF;
@@ -142,12 +128,10 @@ std::vector<uint8_t> sha1(const std::vector<uint8_t>& data) {
 
 std::vector<uint8_t> hmac_sha1(const std::vector<uint8_t>& key, const uint8_t* msg, size_t msg_len) {
     // Step 1: if the key is longer than 64-bytes, we hash it with SHA-1
-        #if DEBUG
-            std::cout << "  calculating HMAC-SHA-1(K,C)" << std::endl;
-            std::cout << "  HMAC-SHA-1(K,C) = SAH-1(K XOR opad, SHA-1(K XOR ipad, C))" << std::endl << std::endl;            
-        #endif
-
-
+    #if DEBUG
+        std::cout << "  calculating HMAC-SHA-1(K,C)" << std::endl;
+        std::cout << "  HMAC-SHA-1(K,C) = SAH-1(K XOR opad, SHA-1(K XOR ipad, C))" << std::endl << std::endl;            
+    #endif
     std::vector<uint8_t> key_copy = key;
     if (key_copy.size() > SHA1_BLOCK_SIZE) {
         #if DEBUG
@@ -156,6 +140,7 @@ std::vector<uint8_t> hmac_sha1(const std::vector<uint8_t>& key, const uint8_t* m
         key_copy = sha1(key_copy); // Hacher la clé avec SHA-1
     }
 
+
     //Step 2: if the key is shorter than 64-bytes, we fill it with zeros.
     #if DEBUG
         std::cout << "key filled with 0 to make it it to 64-bit" << std::endl << std::endl;
@@ -163,6 +148,7 @@ std::vector<uint8_t> hmac_sha1(const std::vector<uint8_t>& key, const uint8_t* m
     if (key_copy.size() < SHA1_BLOCK_SIZE) {
         key_copy.resize(SHA1_BLOCK_SIZE, 0x00); // Compléter avec des zéros
     }
+
 
     // creating opad and ipad
     std::vector<uint8_t> ipad(SHA1_BLOCK_SIZE, 0x36);
@@ -182,6 +168,8 @@ std::vector<uint8_t> hmac_sha1(const std::vector<uint8_t>& key, const uint8_t* m
         std::cout << std::endl << std::endl;     
     #endif    
 
+
+
     // Step 3: claculating the hmac
     //calculating SHA-1(K XOR ipad, C)
     std::vector<uint8_t> inner_input = ipad;
@@ -197,7 +185,7 @@ std::vector<uint8_t> hmac_sha1(const std::vector<uint8_t>& key, const uint8_t* m
         std::cout << std::endl << std::endl;
     #endif
 
-    // Appliquer SHA-1 sur (opad || hash(ipad || msg))
+    // apply SHA-1 on (opad || hash(ipad || msg))
     std::vector<uint8_t> outer_input = opad;
     outer_input.insert(outer_input.end(), inner_hash.begin(), inner_hash.end());
     #if DEBUG

@@ -1,7 +1,7 @@
 #include "crypto.hpp"
 #include <fstream>
 
-const uint8_t XOR_KEY = 0x5A;  // Clé de chiffrement simple
+const uint8_t XOR_KEY = 0x5A;  // simple encrypting key
 
 void encrypt_key_to_file(const std::string& filename, const std::vector<uint8_t>& key) {
     std::ofstream ofs(filename, std::ios::binary);

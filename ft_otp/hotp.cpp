@@ -34,7 +34,7 @@ uint32_t generate_hotp(const std::vector<uint8_t>& key, uint64_t counter) {
         std::cout << "    dynamic truncation of hmac: " << std::endl;
         print_hex(hmac);
     #endif
-
+    //dynamic truncating 
     int offset = hmac[19] & 0x0F;
     uint32_t binary =
         ((hmac[offset] & 0x7F) << 24) |

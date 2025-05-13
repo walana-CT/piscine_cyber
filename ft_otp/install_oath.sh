@@ -14,4 +14,3 @@ make install
 
 # 4. Ajouter à ton PATH
 echo 'export PATH=$HOME/.local/bin:$PATH' >> ~/.bashrc
-source ~/.bashrc

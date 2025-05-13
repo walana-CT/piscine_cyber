@@ -6,7 +6,7 @@
 #    By: rficht <rficht@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/20 09:23:49 by rficht            #+#    #+#              #
-#    Updated: 2024/03/11 09:17:57 by rficht           ###   ########.fr        #
+#    Updated: 2025/05/13 12:00:00 by rficht           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,78 +21,49 @@ CYAN	:= \033[36;1m
 WHITE	:= \033[37;1m
 RESET	:= \033[0m
 
-#-----------------------#
-#	Makefile program	#
-#-----------------------#
-
-#avoid inheriting variables from the environement
 SHELL = /bin/sh
-
-#--- Program name ---#
 NAME = ft_otp
 
-#--- LIBS ---#
-#--- Includes ---#
-
-# Compil flags
 FLAGS = -Wall -Wextra -Werror
-
-# General compilation flags
 CFLAG = $(FLAGS)  $(INCLUDES) -fsanitize=address -static-libasan
- 
-# Linking compilation flags
 GFLAG = -g3
+CC = g++
 
-#---------------#
-#	Sources		#
-#---------------#
 FILES +=	crypto.cpp\
 			debug.cpp\
 			hmac_sha1.cpp\
 			hotp.cpp\
 			main.cpp
-			
-SOURCES = $(FILES)
-OBJ = $(FILES:.cpp=.o)
 
-# Compiler used for this project
-CC = g++
+# Directory for object files
+OBJ_DIR = objects
 
-# main rule called by default
+# Create a list of .o files in the object directory
+OBJ = $(addprefix $(OBJ_DIR)/, $(FILES:.cpp=.o))
+
+# Default rule
 all: $(NAME)
 
-# rule for compile .c -> .o
-%.o : %.cpp
+# Create object directory if needed
+$(OBJ_DIR):
+	@mkdir -p $(OBJ_DIR)
+
+# Compile .cpp -> .o inside objects/
+$(OBJ_DIR)/%.o: %.cpp | $(OBJ_DIR)
 	@printf '$(GREEN)Compiling: $(RESET)$@\n'
 	@$(CC) $(CFLAG) -o $@ -c $<
 
-
-# create the program
+# Link the final binary
 $(NAME): $(OBJ)
 	@printf '$(RED)Linking: $(RESET)$@\n'
 	$(CC) $(CFLAG) $(GFLAG) -o $(NAME) $(OBJ);
-	
-# remove .o corresponding to sources
+
 clean:
 	@printf ' -- cleaning objects $(NAME) -- \n'
-	@rm -f $(OBJ)
+	@rm -rf $(OBJ_DIR)
 
-# remove .o and .a corresponding to sources
 fclean: clean
 	@printf ' -- cleaning program $(NAME) -- \n'
 	@rm -f $(NAME)
 
-# force to recompile everything
 re: fclean all
-
-#help:
-#	@echo 'Sources:'
-#	@echo $(SOURCES)
-
-#target: dependencies
-#		recipies
-
-# $@ target name
-# $< first dependencie
-# $^ dependencies list
-# $? dependencies that are more recent than target
