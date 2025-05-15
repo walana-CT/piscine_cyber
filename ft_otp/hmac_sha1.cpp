@@ -20,7 +20,7 @@ inline uint32_t F(uint32_t t, uint32_t B, uint32_t C, uint32_t D) {
     if (t < 20) return (B & C) | (~B & D);          // Choose
     if (t < 40) return B ^ C ^ D;                   // Parity
     if (t < 60) return (B & C) | (B & D) | (C & D); // Majority
-    return B ^ C ^ D;                               // Parity      
+    return B ^ C ^ D;                               // Parity 
 }
 
 std::vector<uint8_t> sha1(const std::vector<uint8_t>& data) {
@@ -190,7 +190,7 @@ std::vector<uint8_t> hmac_sha1(const std::vector<uint8_t>& key, const uint8_t* m
     outer_input.insert(outer_input.end(), inner_hash.begin(), inner_hash.end());
     #if DEBUG
         std::cout << "    Calculating: HMAC-SHA-1(K,C) = SAH-1(K XOR opad, innerhash)" << std::endl;
-        print_hex(inner_input);
+        print_hex(outer_input);
         std::cout << " ---->" << std::endl;
     #endif
     return sha1(outer_input);

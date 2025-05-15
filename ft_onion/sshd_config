@@ -1,0 +1,3 @@
+Port 4250
+PermitRootLogin no
+PasswordAuthentication yes
