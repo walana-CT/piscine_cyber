@@ -70,7 +70,7 @@ int main(int argc, char* argv[]) {
     if (arg == "-h" || arg == "--help") {
         printHelp();
     } else if (arg == "-v" || arg == "--version") {
-        std::cout << "Cryptoworm v0.1\n";
+        std::cout << "stockholm v0.1\n";
     } else if (arg == "-r" || arg == "--reverse") {
         if (argc < 3 || std::string(argv[2]).length() < 16) {
             std::cerr << "Error: A valid 16+ char key is required for decryption.\n";

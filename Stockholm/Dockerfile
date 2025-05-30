@@ -22,16 +22,18 @@ RUN apt-get update && apt-get install -y \
     libcrypto++-doc \
     libcrypto++-utils \
     make \
+    cmake \
+    sudo \
     && apt-get clean
 
 COPY infection /home/infection
-COPY app /app
-WORKDIR /app
-RUN make
+COPY stockholm /app/stockholm
+COPY iron_dome /app/iron_dome
 
 # Ajoute un utilisateur non root pour éviter de tout faire en root
 RUN useradd -ms /bin/bash cyberuser
-RUN chown -R cyberuser:cyberuser /app /home/infection
+RUN echo "cyberuser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+RUN chown -R cyberuser:cyberuser /app /home/infection /var/log
 USER cyberuser
 WORKDIR /home/cyberuser
 
